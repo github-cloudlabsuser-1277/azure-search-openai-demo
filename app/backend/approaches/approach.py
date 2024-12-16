@@ -91,6 +91,40 @@ class ThoughtStep:
 
 
 class Approach(ABC):
+    """
+    Abstract base class for different approaches to handle search and embedding operations.
+    Attributes:
+        ALLOW_NON_GPT_MODELS (bool): Allows usage of non-GPT models even if no tokenizer is available for accurate token counting.
+    Args:
+        search_client (SearchClient): Client for performing search operations.
+        openai_client (AsyncOpenAI): Client for interacting with OpenAI services.
+        auth_helper (AuthenticationHelper): Helper for building security filters.
+        query_language (Optional[str]): Language for the query.
+        query_speller (Optional[str]): Speller for the query.
+        embedding_deployment (Optional[str]): Deployment name for embedding model.
+        embedding_model (str): Name of the embedding model.
+        embedding_dimensions (int): Dimensions of the embedding model.
+        openai_host (str): Host for OpenAI services.
+        vision_endpoint (str): Endpoint for vision services.
+        vision_token_provider (Callable[[], Awaitable[str]]): Provider for vision service tokens.
+    Methods:
+        build_filter(overrides: dict[str, Any], auth_claims: dict[str, Any]) -> Optional[str]:
+            Builds a filter string based on overrides and authentication claims.
+        search(
+            Performs a search operation and returns a list of documents.
+        get_sources_content(results: List[Document], use_semantic_captions: bool, use_image_citation: bool) -> list[str]:
+            Retrieves the content of sources from the search results.
+        get_citation(sourcepage: str, use_image_citation: bool) -> str:
+            Generates a citation string based on the source page.
+        compute_text_embedding(q: str):
+            Computes the text embedding for a given query.
+        compute_image_embedding(q: str):
+            Computes the image embedding for a given query.
+        run(messages: list[ChatCompletionMessageParam], session_state: Any = None, context: dict[str, Any] = {}) -> dict[str, Any]:
+            Abstract method to be implemented by subclasses for running the approach.
+        run_stream(messages: list[ChatCompletionMessageParam], session_state: Any = None, context: dict[str, Any] = {}) -> AsyncGenerator[dict[str, Any], None]:
+            Abstract method to be implemented by subclasses for running the approach with streaming.
+    """
 
     # Allows usage of non-GPT model even if no tokenizer is available for accurate token counting
     # Useful for using local small language models, for example
